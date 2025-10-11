@@ -54,7 +54,7 @@ const Header = () => {
         </div>
 
         {/* Login Button */}
-        <button className="bg-primary text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform">
+        <button onClick={() => router.push('/auth')} className="bg-primary text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform">
           Đăng nhập
         </button>
 

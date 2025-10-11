@@ -11,6 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.webnhac.repository.AlbumRepository;
+import com.webnhac.dto.AlbumSimpleDTO;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.PageRequest;
 
 @Slf4j
 @Service
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArtistServiceImpl implements ArtistService {
 
     private final ArtistRepository artistRepository;
+    private final AlbumRepository albumRepository;
 
     @Override
     public Page<ArtistResponse> getAllArtists(Pageable pageable) {
@@ -57,16 +62,28 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     private ArtistResponse convertToResponse(Artist artist) {
-        return ArtistResponse.builder()
-                .id(artist.getId())
-                .name(artist.getName())
-                .bio(artist.getBio())
-                .avatarUrl(artist.getAvatarUrl())
-                .coverImageUrl(artist.getCoverImageUrl())
-                .verified(artist.isVerified())
-                .followersCount(artist.getFollowersCount())
-                .createdAt(artist.getCreatedAt())
-                .updatedAt(artist.getUpdatedAt())
-                .build();
+    // fetch top albums (limit 3)
+    var albums = albumRepository.findByArtistIdOrderByReleaseDateDesc(artist.getId(), PageRequest.of(0, 3))
+        .stream()
+        .map(a -> AlbumSimpleDTO.builder()
+            .id(a.getId())
+            .title(a.getTitle())
+            .coverImageUrl(a.getCoverImageUrl())
+            .releaseDate(a.getReleaseDate() != null ? a.getReleaseDate().toString() : null)
+            .build())
+        .collect(Collectors.toList());
+
+    return ArtistResponse.builder()
+        .id(artist.getId())
+        .name(artist.getName())
+        .bio(artist.getBio())
+        .avatarUrl(artist.getAvatarUrl())
+        .coverImageUrl(artist.getCoverImageUrl())
+        .verified(artist.isVerified())
+        .followersCount(artist.getFollowersCount())
+        .createdAt(artist.getCreatedAt())
+        .updatedAt(artist.getUpdatedAt())
+        .albums(albums)
+        .build();
     }
 }

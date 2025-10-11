@@ -3,6 +3,7 @@ import BannerCarousel from "@/components/home/BannerCarousel";
 import CategoryGrid from "@/components/home/CategoryGrid";
 import TrendingSongs from "@/components/home/TrendingSongs";
 import ChartSection from "@/components/home/ChartSection";
+import FeaturedArtists from "@/components/home/FeaturedArtists";
 import Footer from "@/components/layout/Footer";
 
 export default function HomePage() {
@@ -22,6 +23,9 @@ export default function HomePage() {
 
       {/* Chart Section */}
       <ChartSection />
+
+  {/* Featured Artists */}
+  <FeaturedArtists />
 
       {/* Footer */}
       <Footer />

@@ -76,3 +76,48 @@ export function getCoverImageFromArtist(artistName: string, songTitle: string): 
   
   return `/images/songs/${artistSlug}/${titleSlug}.jpg`;
 }
+
+// Try to guess an album cover path for an artist from public/images/albums
+export function getAlbumCoverFromArtist(artistName: string): string {
+  if (!artistName) return '/images/albums/DuongDomic/anhBia.jpg';
+
+  // common special mappings
+  const lower = artistName.toLowerCase();
+  const mapping: Record<string, string> = {
+    'sơn tùng m-tp': 'sontung_mtp',
+    'sontung m-tp': 'sontung_mtp',
+    'sontung_mtp': 'sontung_mtp',
+    'hiếu thứ hai': 'hieuthu2',
+    'jack j97': 'jackj97',
+    'rhyder': 'rhyder',
+    'quân a.p': 'quanap',
+    'duong domic': 'DuongDomic',
+    'duongdomic': 'DuongDomic',
+    'taylor swift': 'taylor-swift',
+  };
+
+  let slug = mapping[lower];
+  if (!slug) {
+    // basic slugify: remove diacritics-ish and keep letters/numbers/underscore/dash
+    slug = artistName
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .replace(/[^a-z0-9\s_-]/g, '')
+      .trim()
+      .replace(/\s+/g, '_');
+  }
+
+  // try common album image names; pick the most common default filename
+  const candidates = [
+    `/images/albums/${slug}/anhBia.jpg`,
+    `/images/albums/${slug}/cover.jpg`,
+    `/images/albums/${slug}/avatar.jpg`,
+    `/images/albums/${slug}/1.jpg`,
+  ];
+
+  // We can't check FS here in the client bundle reliably, so return the first candidate.
+  // Image component will fallback to broken image if not present; callers should also
+  // include a generic fallback when rendering.
+  return candidates[0];
+}

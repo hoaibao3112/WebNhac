@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.webnhac.dto.AlbumSimpleDTO;
 
 @Data
 @Builder
@@ -21,4 +24,5 @@ public class ArtistResponse {
     private Long followersCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private List<AlbumSimpleDTO> albums;
 }
