@@ -67,4 +67,5 @@ public class ArtistController {
         Page<ArtistResponse> artists = artistService.getVerifiedArtists(pageable);
         return ResponseEntity.ok(ApiResponse.success(artists));
     }
+
 }

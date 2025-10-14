@@ -22,7 +22,6 @@ export default function LoginForm() {
     }
     return true;
   };
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
