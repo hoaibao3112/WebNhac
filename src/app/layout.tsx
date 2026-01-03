@@ -3,6 +3,7 @@ import "./globals.css";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import { PlayerProvider } from "@/contexts/PlayerContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
   title: "WebNhac - Nghe nhạc trực tuyến",
@@ -17,10 +18,11 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
-        <PlayerProvider>
-          <div className="flex h-screen bg-black">
-            {/* Sidebar */}
-            <Sidebar />
+        <AuthProvider>
+          <PlayerProvider>
+            <div className="flex h-screen bg-black">
+              {/* Sidebar */}
+              <Sidebar />
             
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col overflow-hidden">
@@ -33,7 +35,8 @@ export default function RootLayout({
               </main>
             </div>
           </div>
-        </PlayerProvider>
+          </PlayerProvider>
+        </AuthProvider>
       </body>
     </html>
   );

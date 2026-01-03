@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import authService from "../../services/authService";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { login: authLogin } = useAuth();
 
   const validate = () => {
     if (!email || !password) {
@@ -28,8 +30,8 @@ export default function LoginForm() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const token = await authService.login({ email, password });
-      localStorage.setItem("wn_token", token || "");
+      const { token, user } = await authService.login({ email, password });
+      authLogin(token, user);
       router.push("/");
     } catch (err: any) {
       setError(err?.message || "Đăng nhập thất bại");

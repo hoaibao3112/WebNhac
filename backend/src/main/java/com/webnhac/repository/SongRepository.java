@@ -30,6 +30,9 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     // Lấy bài hát trending (theo lượt nghe)
     Page<Song> findAllByOrderByPlayCountDesc(Pageable pageable);
 
+    // Lấy bài hát theo lượt thích
+    Page<Song> findAllByOrderByLikeCountDesc(Pageable pageable);
+
     // Lấy bài hát mới nhất
     Page<Song> findAllByOrderByReleaseDateDesc(Pageable pageable);
 

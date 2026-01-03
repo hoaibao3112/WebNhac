@@ -80,6 +80,16 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<SongDTO> getFavoriteSongs(Long userId, Pageable pageable) {
+        log.debug("Getting favorite songs for user id: {}", userId);
+        // For now, return trending songs as favorites
+        // TODO: Implement actual user favorites when authentication is ready
+        return songRepository.findAllByOrderByLikeCountDesc(pageable)
+                .map(this::convertToDTO);
+    }
+
+    @Override
     @Transactional
     public void incrementPlayCount(Long songId) {
         log.debug("Incrementing play count for song id: {}", songId);

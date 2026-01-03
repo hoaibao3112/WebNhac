@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuth();
 
   return (
     <header className="bg-zinc-900/95 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-10">
@@ -53,10 +56,63 @@ const Header = () => {
           FREE
         </div>
 
-        {/* Login Button */}
-        <button onClick={() => router.push('/auth')} className="bg-primary text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform">
-          Đăng nhập
-        </button>
+        {/* User Menu or Login Button */}
+        {isAuthenticated && user ? (
+          <div className="relative">
+            <button 
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              className="flex items-center space-x-2 bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-full transition"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center font-bold text-white text-sm">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              <span className="text-white font-medium">{user.name}</span>
+              <span className="text-white text-sm">▼</span>
+            </button>
+            
+            {/* Dropdown Menu */}
+            {showUserMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-zinc-800 rounded-lg shadow-xl border border-zinc-700 overflow-hidden z-50">
+                <button 
+                  onClick={() => {
+                    router.push('/my-music');
+                    setShowUserMenu(false);
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-zinc-700 text-white transition"
+                >
+                  Thư viện của tôi
+                </button>
+                <button 
+                  onClick={() => {
+                    router.push('/my-music/upload');
+                    setShowUserMenu(false);
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-zinc-700 text-white transition"
+                >
+                  Tải nhạc lên
+                </button>
+                <div className="border-t border-zinc-700"></div>
+                <button 
+                  onClick={() => {
+                    logout();
+                    setShowUserMenu(false);
+                    router.push('/');
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-zinc-700 text-red-400 transition"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button 
+            onClick={() => router.push('/auth')} 
+            className="bg-primary text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform"
+          >
+            Đăng nhập
+          </button>
+        )}
 
         {/* Settings */}
         <button className="text-gray-400 hover:text-white transition">

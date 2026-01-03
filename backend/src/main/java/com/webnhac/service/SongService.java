@@ -13,6 +13,7 @@ public interface SongService {
     Page<SongDTO> getTrendingSongs(Pageable pageable);
     Page<SongDTO> getSongsByArtist(Long artistId, Pageable pageable);
     Page<SongDTO> getSongsByGenre(Long genreId, Pageable pageable);
+    Page<SongDTO> getFavoriteSongs(Long userId, Pageable pageable);
     void incrementPlayCount(Long songId);
     void toggleLike(Long songId, boolean isLike);
 }

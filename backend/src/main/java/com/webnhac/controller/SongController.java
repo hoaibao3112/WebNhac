@@ -91,6 +91,18 @@ public class SongController {
         return ResponseEntity.ok(ApiResponse.success(songs));
     }
 
+    @GetMapping("/favorites")
+    public ResponseEntity<ApiResponse<Page<SongDTO>>> getFavoriteSongs(
+            @RequestParam(defaultValue = "1") Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        log.info("GET /api/songs/favorites - userId: {}, page: {}, size: {}", userId, page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SongDTO> songs = songService.getFavoriteSongs(userId, pageable);
+        return ResponseEntity.ok(ApiResponse.success(songs));
+    }
+
     @PostMapping("/{id}/play")
     public ResponseEntity<ApiResponse<String>> playSong(@PathVariable Long id) {
         log.info("POST /api/songs/{}/play", id);

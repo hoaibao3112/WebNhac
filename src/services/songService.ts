@@ -102,4 +102,17 @@ export const songService = {
   unlike: async (id: number): Promise<void> => {
     await api.delete(`/songs/${id}/like`);
   },
+
+  // Lấy danh sách bài hát yêu thích
+  getFavorites: async (userId: number = 1, page = 0, size = 20): Promise<PageResponse<Song>> => {
+    const response = await api.get<any, ApiResponse<PageResponse<Song>>>('/songs/favorites', {
+      params: { userId, page, size }
+    });
+    return response.data;
+  },
+
+  // Unlike bài hát
+  unlike: async (id: number): Promise<void> => {
+    await api.delete(`/songs/${id}/like`);
+  },
 };
