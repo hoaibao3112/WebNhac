@@ -3,7 +3,8 @@ package com.webnhac.controller;
 
 import com.webnhac.dto.ApiResponse;
 import com.webnhac.dto.SongDTO;
-import com.webnhac.entity.Song;
+import com.webnhac.service.PlayCountService;
+import com.webnhac.service.PlayHistoryService;
 import com.webnhac.service.SongService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 public class SongController {
 
     private final SongService songService;
+    private final PlayCountService playCountService;
+    private final PlayHistoryService playHistoryService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<Page<SongDTO>>> getAllSongs(
@@ -104,9 +107,19 @@ public class SongController {
     }
 
     @PostMapping("/{id}/play")
-    public ResponseEntity<ApiResponse<String>> playSong(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> playSong(
+            @PathVariable Long id,
+            @RequestParam(required = false) Long userId) {
         log.info("POST /api/songs/{}/play", id);
-        songService.incrementPlayCount(id);
+        
+        // 1. Tăng play count trong Redis (nhanh, memory) thay vì DB (chậm, lock)
+        playCountService.incrementPlayCount(id);
+        
+        // 2. Nếu có userId, ghi lịch sử nghe bất đồng bộ (không block response)
+        if (userId != null) {
+            playHistoryService.recordPlayAsync(userId, id);
+        }
+        
         return ResponseEntity.ok(ApiResponse.success("Play count incremented"));
     }
 

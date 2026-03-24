@@ -18,12 +18,12 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-black text-white flex flex-col">
+    <aside className="w-64 bg-[#050505]/40 backdrop-blur-3xl border-r border-white/5 text-white flex flex-col z-20 transition-all">
       {/* Logo */}
       <div className="p-6">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-2xl">🎵</span>
-          <span className="text-xl font-bold text-primary">WebNhac</span>
+        <Link href="/" className="flex items-center space-x-2 group">
+          <span className="text-2xl group-hover:scale-110 transition-transform">🎵</span>
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500">PartyNhac</span>
         </Link>
       </div>
 
@@ -34,13 +34,13 @@ const Sidebar = () => {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 group ${
                   pathname === item.href
-                    ? "bg-zinc-800 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-zinc-800/50"
+                    ? "bg-gradient-to-r from-purple-500/10 to-transparent text-white border-l-2 border-purple-500 shadow-[inset_0_0_20px_rgba(168,85,247,0.05)]"
+                    : "text-gray-400 hover:text-white hover:bg-white/5 border-l-2 border-transparent"
                 }`}
               >
-                <span className="text-xl">{item.icon}</span>
+                <span className={`text-xl transition-transform ${pathname === item.href ? 'scale-110' : 'group-hover:scale-110'}`}>{item.icon}</span>
                 <span className="font-medium">{item.label}</span>
               </Link>
             </li>
@@ -56,10 +56,10 @@ const Sidebar = () => {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`block px-4 py-3 rounded-lg transition-colors ${
+                className={`block px-4 py-3 rounded-lg transition-all duration-300 ${
                   pathname === item.href
-                    ? "bg-zinc-800 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-zinc-800/50"
+                    ? "text-white bg-white/10 font-medium"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
                 }`}
               >
                 {item.label}
@@ -70,8 +70,8 @@ const Sidebar = () => {
       </nav>
 
       {/* Login Button */}
-      <div className="p-6 border-t border-zinc-800">
-        <button className="w-full bg-white text-black py-3 rounded-full font-semibold hover:scale-105 transition-transform">
+      <div className="p-6 border-t border-white/5 mt-auto mb-20">
+        <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-full font-semibold hover:scale-105 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all">
           Đăng nhập
         </button>
       </div>

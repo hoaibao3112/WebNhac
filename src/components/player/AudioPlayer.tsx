@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Song } from '@/services/songService';
+import { useListeningRoom } from '@/contexts/ListeningRoomContext';
+import ListeningRoomUI from './ListeningRoomUI';
 
 interface AudioPlayerProps {
   currentSong: Song | null;
@@ -22,6 +24,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  // Ref để cản sự kiện onChange vòng lặp vô hạn giữa Host và Client
+  const isSeekingByHostRef = useRef(false);
+
+  const { incomingAction, broadcastAction, isHost, isConnected } = useListeningRoom();
 
   useEffect(() => {
     if (currentSong && audioRef.current) {
@@ -58,13 +64,47 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     };
   }, [onNext]);
 
+  // Lắng nghe sự kiện Sync từ Server gửi xuống (do Client khác Host / hoặc Host)
+  useEffect(() => {
+    if (!incomingAction || !audioRef.current) return;
+
+    const audio = audioRef.current;
+    
+    // Tính toán độ trễ (latency)
+    const latency = Math.max(0, (Date.now() - incomingAction.timestamp) / 1000);
+
+    switch (incomingAction.action) {
+      case 'PLAY':
+        isSeekingByHostRef.current = true;
+        audio.currentTime = incomingAction.currentTime + latency;
+        audio.play().then(() => setIsPlaying(true)).catch(console.error);
+        setTimeout(() => { isSeekingByHostRef.current = false; }, 500);
+        break;
+      case 'PAUSE':
+        isSeekingByHostRef.current = true;
+        audio.currentTime = incomingAction.currentTime;
+        audio.pause();
+        setIsPlaying(false);
+        setTimeout(() => { isSeekingByHostRef.current = false; }, 500);
+        break;
+      case 'SEEK':
+        isSeekingByHostRef.current = true;
+        audio.currentTime = incomingAction.currentTime + latency;
+        setCurrentTime(audio.currentTime);
+        setTimeout(() => { isSeekingByHostRef.current = false; }, 500);
+        break;
+    }
+  }, [incomingAction]);
+
   const togglePlay = () => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
+      broadcastAction('PAUSE', audioRef.current.currentTime);
     } else {
       audioRef.current.play();
+      broadcastAction('PLAY', audioRef.current.currentTime);
     }
     setIsPlaying(!isPlaying);
   };
@@ -74,6 +114,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     setCurrentTime(time);
     if (audioRef.current) {
       audioRef.current.currentTime = time;
+      if (!isSeekingByHostRef.current) {
+         broadcastAction('SEEK', time);
+      }
     }
   };
 
@@ -205,8 +248,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             </div>
           </div>
 
-          {/* Volume & Close */}
+          {/* Volume, Listening Room & Close */}
           <div className="flex items-center gap-4 flex-1 justify-end">
+            
+            <ListeningRoomUI />
+
             {/* Volume */}
             <div className="flex items-center gap-2">
               <button onClick={toggleMute} className="text-gray-400 hover:text-white">

@@ -30,8 +30,8 @@ export default function PlayerPage() {
         // Fetch from API
         const data = await songService.getById(parseInt(songId));
         
-        // Get proper cover image from audio path
-        const coverImage = getCoverImageFromAudio(data.fileUrl);
+        // Use cover image from API (DB), fallback to audio-derived path
+        const coverImage = data.coverImageUrl || getCoverImageFromAudio(data.fileUrl);
         
         // Parse lyrics from backend (split by newlines if exists)
         const parsedLyrics = data.lyrics 
@@ -75,15 +75,24 @@ export default function PlayerPage() {
   }, [songId]);
 
   const handleNext = () => {
-    // Navigate to next song (simple increment for now)
-    const nextId = parseInt(songId) + 1;
-    window.location.href = `/player/${nextId}`;
+    // Find current song index in playlist, then go to next
+    const currentIndex = playlist.findIndex((s: any) => s.id === parseInt(songId));
+    if (currentIndex >= 0 && currentIndex < playlist.length - 1) {
+      window.location.href = `/player/${playlist[currentIndex + 1].id}`;
+    } else if (playlist.length > 0) {
+      // Wrap around to first song
+      window.location.href = `/player/${playlist[0].id}`;
+    }
   };
 
   const handlePrevious = () => {
-    // Navigate to previous song (simple decrement for now)
-    const prevId = Math.max(1, parseInt(songId) - 1);
-    window.location.href = `/player/${prevId}`;
+    const currentIndex = playlist.findIndex((s: any) => s.id === parseInt(songId));
+    if (currentIndex > 0) {
+      window.location.href = `/player/${playlist[currentIndex - 1].id}`;
+    } else if (playlist.length > 0) {
+      // Wrap around to last song
+      window.location.href = `/player/${playlist[playlist.length - 1].id}`;
+    }
   };
 
   if (isLoading) {

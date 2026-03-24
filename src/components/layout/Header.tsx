@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import ListeningRoomUI from "@/components/player/ListeningRoomUI";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,7 +12,7 @@ const Header = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
-    <header className="bg-zinc-900/95 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+    <header className="bg-[#050505]/60 backdrop-blur-xl border-b border-white/5 px-8 py-4 flex items-center justify-between sticky top-0 z-50 transition-all duration-300">
       {/* Navigation Buttons */}
       <div className="flex items-center space-x-4">
         <button 
@@ -36,9 +37,9 @@ const Header = () => {
             placeholder="Tìm kiếm bài hát, nghệ sĩ, album..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white text-black px-4 py-2 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full bg-white/5 border border-white/10 text-white placeholder-gray-400 px-4 py-2 pl-10 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white/10 transition-all duration-300"
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             🔍
           </span>
         </div>
@@ -46,6 +47,9 @@ const Header = () => {
 
       {/* Right Actions */}
       <div className="flex items-center space-x-4">
+        {/* 🎧 Party Stream - Listening Room */}
+        <ListeningRoomUI />
+
         {/* Upload Button */}
         <button className="text-gray-400 hover:text-white transition">
           <span className="text-xl">⬆️</span>
@@ -108,7 +112,7 @@ const Header = () => {
         ) : (
           <button 
             onClick={() => router.push('/auth')} 
-            className="bg-primary text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition-transform"
+            className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:scale-105 hover:bg-gray-100 transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)]"
           >
             Đăng nhập
           </button>

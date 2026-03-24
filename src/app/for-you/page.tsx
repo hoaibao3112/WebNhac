@@ -39,7 +39,7 @@ export default function ForYouPage() {
           <div 
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: "url('/images/banner/music-hero.jpg')",
+              backgroundImage: "linear-gradient(to right, #4c1d95, #be185d)",
               filter: "brightness(0.4) blur(2px)",
             }}
           ></div>

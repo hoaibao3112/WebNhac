@@ -114,3 +114,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Gemini / AI Agent
+.gemini/
+
+# Database dumps (sensitive data)
+Dump*.sql
+
+# OS extras
+Desktop.ini
+ehthumbs.db

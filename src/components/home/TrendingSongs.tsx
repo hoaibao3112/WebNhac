@@ -99,13 +99,13 @@ const TrendingSongs = () => {
       <h2 className="text-2xl font-bold text-white mb-6">🔥 Thịnh Hành</h2>
       <div className="grid grid-cols-5 gap-4">
         {displayedSongs.map((song) => {
-          // Get cover image from audio path
-          const coverImage = getCoverImageFromAudio(song.fileUrl);
+          // Use cover image from API (DB), fallback to audio-derived path
+          const coverImage = song.coverImageUrl || getCoverImageFromAudio(song.fileUrl);
           
           return (
             <div
               key={song.id}
-              className="bg-zinc-800 rounded-lg p-4 hover:bg-zinc-700 transition cursor-pointer group"
+              className="bg-white/5 border border-white/5 rounded-xl p-4 hover:bg-white/10 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(168,85,247,0.15)]"
               onClick={() => handlePlay(song)}
             >
               <div className="relative">
@@ -127,8 +127,8 @@ const TrendingSongs = () => {
                   />
                 </div>
                 {/* Play button overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                  <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.5)] transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
                     <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z"/>
                     </svg>

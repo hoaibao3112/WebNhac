@@ -13,6 +13,7 @@ import {
   VolumeX,
   List
 } from 'lucide-react';
+import AudioVisualizer from './AudioVisualizer';
 
 interface MusicPlayerBarProps {
   song: {
@@ -262,6 +263,9 @@ export default function MusicPlayerBar({ song, onNext, onPrevious, onTimeUpdate,
             <span className="sr-only">Open Lyrics</span>
             🎤
           </button>
+
+          {/* 🎵 Audio Visualizer Toggle */}
+          <AudioVisualizer audioElement={audioRef.current} isPlaying={isPlaying} />
 
           <button className="p-2 text-gray-400 hover:text-white transition" onClick={() => onOpenPlaylist && onOpenPlaylist()}>
             <List size={20} />

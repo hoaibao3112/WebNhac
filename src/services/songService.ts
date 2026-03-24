@@ -109,10 +109,5 @@ export const songService = {
       params: { userId, page, size }
     });
     return response.data;
-  },
-
-  // Unlike bài hát
-  unlike: async (id: number): Promise<void> => {
-    await api.delete(`/songs/${id}/like`);
-  },
+  }
 };
